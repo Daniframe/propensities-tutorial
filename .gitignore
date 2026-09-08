@@ -1,0 +1,25 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+
+# --- Environments ---
+.venv/
+venv/
+env/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Secrets ---
+.env
+*.env
+
+# --- Run outputs ---
+data/annotations/AbstentionBench/*.csv
+mock_outputs_*.jsonl
+mock_errors_*.jsonl
+errors.jsonl
+outputs.jsonl
+temporary_batch_input.jsonl
+!data/annotations/AbstentionBench/.gitkeep
