@@ -19,7 +19,7 @@ DIMENSIONS = {
     "risk aversion": "RA",
     "delay of gratification": "TD",
     "ultracrepidarianism": "Ul",
-    "coopetition": "Co",
+    # "coopetition": "Co",  # excluded: rubrics/Co_v1.md is empty, no rubric written yet
 }
 
 SYS_PROMPT = "You are an expert at analyzing questions for cognitive biases."

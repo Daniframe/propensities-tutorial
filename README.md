@@ -2,19 +2,26 @@
 
 This is a step-by-step guide to running `scripts/annotate_AbsBench.py` — the
 program that asks an Azure-hosted GPT-5.1 model to rate 500 benchmark
-questions on 5 behavioural traits, and saves the result as five CSV files.
+questions on 4 behavioural traits, and saves the result as four CSV files.
 
 ## What this script actually does
 
 ```mermaid
 flowchart LR
     A["500 questions\n(AbstentionBench.jsonl)"] --> C["Azure OpenAI\nGPT-5.1, batch job"]
-    B["+ 1 rubric\n(Ex, RA, TD, Ul, Co)"] --> C
+    B["+ 1 rubric\n(Ex, RA, TD, Ul)"] --> C
     C --> D["score per question\ne.g. [-3, +3]"]
 ```
 
-This repeats once per trait, so one run produces **5 CSV files**, landing in
+This repeats once per trait, so one run produces **4 CSV files**, landing in
 `data/annotations/AbstentionBench/`.
+
+> **Note:** a 5th trait, coopetition (`Co`), was originally part of this
+> pipeline but is currently **excluded** — its rubric file, `rubrics/Co_v1.md`,
+> was empty (no rubric was ever actually written for it), so it's been
+> deleted and commented out of `DIMENSIONS` in the script rather than being
+> run with no real criteria to score against. It can be added back once
+> someone writes an actual rubric and restores that file with real content.
 
 ---
 
@@ -40,8 +47,8 @@ internally, in plain language, without reading the code.
    seed means the *same* 500 questions are picked every single time the script
    runs against this same dataset file — this is what makes the run
    reproducible instead of picking a different random set each time.
-6. **For each of the 5 traits** (extraversion, risk aversion, delay of
-   gratification, ultracrepidarianism, coopetition), one after another:
+6. **For each of the 4 traits** (extraversion, risk aversion, delay of
+   gratification, ultracrepidarianism), one after another:
    1. Load that trait's rubric file (e.g. `rubrics/Ex_v1.md`) — a document
       that defines what scores from -3 to +3 mean for this specific trait,
       with worked examples for each level.
@@ -63,7 +70,7 @@ internally, in plain language, without reading the code.
       `<FINAL_RANGE>[ ... ]</FINAL_RANGE>` at the very end of it — this
       becomes that question's `lower_bound` and `upper_bound`.
    7. Save all 500 scored questions for this trait into one CSV file.
-7. Move to the next trait and repeat step 6, until all 5 CSV files exist.
+7. Move to the next trait and repeat step 6, until all 4 CSV files exist.
 
 ## Anatomy of the prompt sent to the model
 
@@ -341,10 +348,10 @@ python scripts/annotate_AbsBench.py
 
 **Expect:** text scrolling by such as `Annotation successfully sent in batch
 form, batch id: ...`, then a long pause, then eventually `Batch successfully
-completed. Parsing results...` — repeated 5 times, once per trait.
+completed. Parsing results...` — repeated 4 times, once per trait.
 
 > **This step takes a while — that's normal.** The script sends 500
-> questions × 5 traits = 2,500 requests to Azure as a background batch job,
+> questions × 4 traits = 2,000 requests to Azure as a background batch job,
 > and checks in every 60 seconds to see if it's done. This can take anywhere
 > from a few minutes to several hours depending on Azure's queue. Leave the
 > terminal window open and let your computer stay awake; do not close it
@@ -359,14 +366,13 @@ Once it finishes, look inside:
 data/annotations/AbstentionBench/
 ```
 
-You'll find **5 new CSV files**, one per trait, named like:
+You'll find **4 new CSV files**, one per trait, named like:
 
 ```
 ft_AbstentionBench_Ex_GPT-5.1_annotated2.csv   <- extraversion
 ft_AbstentionBench_RA_GPT-5.1_annotated2.csv   <- risk aversion
 ft_AbstentionBench_TD_GPT-5.1_annotated2.csv   <- delay of gratification
 ft_AbstentionBench_Ul_GPT-5.1_annotated2.csv   <- ultracrepidarianism
-ft_AbstentionBench_Co_GPT-5.1_annotated2.csv   <- coopetition
 ```
 
 Double-click any of them to open in Excel. Done — that's the whole run.
