@@ -26,7 +26,7 @@ SYS_PROMPT = "You are an expert at analyzing questions for cognitive biases."
 
 if __name__ == "__main__":
 
-    with open("rubrics/presentation.txt", "r") as f:
+    with open("rubrics/presentation.txt", "r", encoding = "utf-8") as f:
         PRES_PROMPT = f.read()
 
     ds = "AbstentionBench"
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for prop_name, prop_code in DIMENSIONS.items():
         ANN_PROMPT = f"The following is a rubric for determining the propensity of showing propensity towards {prop_name}:\n\n<rubric>\n"
 
-        with open(f"rubrics/{prop_code}_v1.md", encoding = "ISO-8859-1") as f:
+        with open(f"rubrics/{prop_code}_v1.md", encoding = "utf-8") as f:
             RUBRIC = f.read()
 
         anns = []
